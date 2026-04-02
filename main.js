@@ -24,5 +24,45 @@ document.addEventListener('DOMContentLoaded', function() {
 // Validation functions
 
 function validateName(name) {
-    // validation code will go here, making an AJAX request to the server to check if the name is valid
+    const errorElement = document.getElementById('name-error');
+
+    if (name.length < 2) { // if name too short
+        showError(errorElement, 'Name must be at least 2 characters long.');
+        return false;
+    } else if (name.length > 50) { // if name too long
+        showError(errorElement, 'Name must be less than 50 characters long.');
+        return false;
+    } else if (!/^[a-zA-Z\s]+$/.test(name)) { // if name has numbers or special characters in it
+        showError(errorElement, 'Invalid characters - only letters and spaces are allowed.');
+        return false;
+    } else { // if name is allowed
+        clearError(errorElement); // clears any previous errors
+        return true;
+    }
+}
+
+function validateEmail(email) {
+    const errorElement = document.getElementById('email-error');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // simple regex for email validation
+
+    if (email.length === 0) { // if no email entered
+        showError(errorElement, 'Email address is required.');
+        return false;
+    } else if (!emailRegex.test(email)) { // if invalid email format
+        showError(errorElement, 'Please enter a valid email address.');
+        return false;
+    } else { // if email is valid
+        clearError(errorElement);
+        return true;
+    }
+}
+
+function showError(element, message) {
+    element.textContent = message;
+    element.style.display = 'block';
+}
+
+function clearError(element) {
+    element.textContent = '';
+    element.style.display = 'none';
 }
