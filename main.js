@@ -66,3 +66,37 @@ function clearError(element) {
     element.textContent = '';
     element.style.display = 'none';
 }
+
+function submitForm() {
+    const formData = new formData(document.getElementById('contactForm'));
+    const submitButton = document.getElementById('submit-btn');
+    const statusDiv = document.getElementById('form-status');
+
+    // Disable submit button to prevent multiple submissions
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
+
+    fetch('process_contact.php', {
+        method: 'POST',
+        body: formData
+    })
+
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccess(statusDiv, data.message);
+            document.getElementById('contactForm').reset(); // reset form on success
+        } else {
+            showError(data.errors); // show any validation errors returned from the server
+        }
+    })
+
+    .catch(error => {
+        showError(statusDiv, 'An error occurred during submission. Please try again.');
+    })
+
+    .finally(() => {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send Message';
+    });
+}
